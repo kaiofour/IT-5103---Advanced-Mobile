@@ -1,3 +1,4 @@
+import { Link } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -57,7 +58,10 @@ export default function App() {
 
       <Text style={styles.textLine}>
         Don’t have an account?{' '}
-        <Text style={styles.signUp}>Sign up</Text>
+
+        <Link href="/Signup">
+          <Text style={styles.signUp}>Sign up</Text>
+        </Link>
       </Text>
 
 
@@ -65,6 +69,7 @@ export default function App() {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
 
