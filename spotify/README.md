@@ -1,5 +1,6 @@
 The app uses a stack navigator to manage transitions between the sign-in, sign-up, profile, playlists, and settings screens. A custom drawer navigator styled with Spotify-like icons provides quick access to the Profile, Playlists, and Settings screens, while being hidden on the sign-in and sign-up screens to maintain proper flow
 
+![alt text](spotify-ui-screenshot-1.jpg)
 ![alt text](navigation-drawer.jpg)
 ![alt text](playlists-screen.jpg)
 ![alt text](profile-screen.jpg)
