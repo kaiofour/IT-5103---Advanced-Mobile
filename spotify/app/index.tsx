@@ -3,9 +3,9 @@ import React from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const logoImg = require('../../assets/images/spotifyLogo.png');
-const fbImg = require('../../assets/images/facebook-logo.png');
-const ggImg = require('../../assets/images/google-logo.png');
+const logoImg = require('../assets/images/spotifyLogo.png');
+const fbImg = require('../assets/images/facebook-logo.png');
+const ggImg = require('../assets/images/google-logo.png');
 
 
 export default function App() {
