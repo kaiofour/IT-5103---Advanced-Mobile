@@ -1,9 +1,101 @@
-import { Ionicons } from '@expo/vector-icons';
-import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useEffect, useState } from "react";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 
-const profile_photo = require('../../assets/images/profile-photo.jpg');
+// Predefined genres
+const GENRES = ["Pop", "Rock", "Jazz", "Classical", "Hip-Hop"];
+
+// Validation helpers
+const validateUsername = (name: string) => /^[\w]{3,20}$/.test(name);
+const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+const validateGenre = (genre: string) => GENRES.includes(genre);
 
 export default function Profile() {
+  const profile_photo = require("../../assets/images/profile-photo.jpg");
+
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [genre, setGenre] = useState("");
+
+  const [errors, setErrors] = useState({ username: "", email: "", genre: "" });
+
+  // Load saved form on mount
+  useEffect(() => {
+    const loadForm = async () => {
+      const saved = await AsyncStorage.getItem("profileForm");
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          setUsername(data.username || "");
+          setEmail(data.email || "");
+          setGenre(data.genre || "");
+        } catch (e) {
+          console.log("Failed to parse saved form", e);
+        }
+      }
+    };
+    loadForm();
+  }, []);
+
+  // Save form whenever inputs change
+  useEffect(() => {
+    AsyncStorage.setItem(
+      "profileForm",
+      JSON.stringify({ username, email, genre })
+    );
+  }, [username, email, genre]);
+
+  // --- Handlers
+  const handleUsernameChange = (text: string) => {
+    setUsername(text);
+    setErrors((prev) => ({
+      ...prev,
+      username: validateUsername(text) ? "" : "3–20 chars, alphanumeric/underscores",
+    }));
+  };
+
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+    setErrors((prev) => ({
+      ...prev,
+      email: validateEmail(text) ? "" : "Invalid email format",
+    }));
+  };
+
+  const handleGenreChange = (text: string) => {
+    setGenre(text);
+    setErrors((prev) => ({
+      ...prev,
+      genre: validateGenre(text) ? "" : "Select a valid genre",
+    }));
+  };
+
+  const handleSubmit = async () => {
+    const usernameValid = validateUsername(username);
+    const emailValid = validateEmail(email);
+    const genreValid = validateGenre(genre);
+
+    if (usernameValid && emailValid && genreValid) {
+      // Clear cache and inputs
+      setErrors({ username: "", email: "", genre: "" });
+      await AsyncStorage.removeItem("profileForm");
+      alert("Profile submitted!");
+    } else {
+      alert("Please fix the errors first!");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -12,60 +104,111 @@ export default function Profile() {
         <Ionicons name="settings-outline" size={24} color="white" />
       </View>
 
-      {/* Profile Info */}
-      <View style={styles.profileSection}>
-        <Image source={profile_photo} style={styles.profileImage} />
-        <Text style={styles.name}>Russel Edullantes</Text>
-        <Text style={styles.username}>@kaiofour</Text>
-      </View>
+      <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
+        {/* Profile Info with Dynamic Preview */}
+        <Animated.View entering={FadeIn} style={styles.profileSection}>
+          <Image
+            source={require("../../assets/images/profile-photo.jpg")}
+            style={styles.profileImage}
+          />
+          <Text style={styles.name}>{username || "Russel Edullantes"}</Text>
+          <Text style={styles.username}>{email || "@kaiofour"}</Text>
+          {genre ? (
+            <Text style={[styles.username, { marginTop: 4 }]}>
+              Favorite Genre: {genre}
+            </Text>
+          ) : null}
+        </Animated.View>
 
-      {/* Stats */}
-      <View style={styles.stats}>
-        <View style={styles.statBox}>
-          <Text style={styles.statNumber}>4</Text>
-          <Text style={styles.statLabel}>Playlists</Text>
+        {/* Stats */}
+        <View style={styles.stats}>
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>4</Text>
+            <Text style={styles.statLabel}>Playlists</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>10</Text>
+            <Text style={styles.statLabel}>Followers</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statNumber}>10</Text>
+            <Text style={styles.statLabel}>Following</Text>
+          </View>
         </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statNumber}>10</Text>
-          <Text style={styles.statLabel}>Followers</Text>
-        </View>
-        <View style={styles.statBox}>
-          <Text style={styles.statNumber}>10</Text>
-          <Text style={styles.statLabel}>Following</Text>
-        </View>
-      </View>
 
-      {/* Buttons */}
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Edit Profile</Text>
-      </TouchableOpacity>
+        {/* Form */}
+        <View style={{ paddingHorizontal: 20 }}>
+          <TextInput
+            placeholder="Username"
+            placeholderTextColor="#aaa"
+            value={username}
+            onChangeText={handleUsernameChange}
+            style={[styles.input, errors.username && styles.inputError]}
+          />
+          {errors.username ? <Text style={styles.errorText}>{errors.username}</Text> : null}
+
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor="#aaa"
+            value={email}
+            onChangeText={handleEmailChange}
+            keyboardType="email-address"
+            style={[styles.input, errors.email && styles.inputError]}
+          />
+          {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}
+
+          <TextInput
+            placeholder="Genre"
+            placeholderTextColor="#aaa"
+            value={genre}
+            onChangeText={handleGenreChange}
+            style={[styles.input, errors.genre && styles.inputError]}
+          />
+          {errors.genre ? <Text style={styles.errorText}>{errors.genre}</Text> : null}
+
+          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Submit Profile</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#121212', padding: 20 },
+  container: { flex: 1, backgroundColor: "#121212" },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
+    paddingHorizontal: 20,
   },
-  headerText: { color: 'white', fontSize: 24, fontWeight: 'bold' },
-  profileSection: { alignItems: 'center', marginBottom: 30 },
+  headerText: { color: "white", fontSize: 24, fontWeight: "bold" },
+  profileSection: { alignItems: "center", marginBottom: 30 },
   profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 10 },
-  name: { color: 'white', fontSize: 22, fontWeight: 'bold' },
-  username: { color: 'gray', fontSize: 14, marginTop: 4 },
-  stats: { flexDirection: 'row', justifyContent: 'space-around', marginBottom: 30 },
-  statBox: { alignItems: 'center' },
-  statNumber: { color: 'white', fontSize: 18, fontWeight: 'bold' },
-  statLabel: { color: 'gray', fontSize: 12 },
+  name: { color: "white", fontSize: 22, fontWeight: "bold" },
+  username: { color: "gray", fontSize: 14, marginTop: 4 },
+  stats: { flexDirection: "row", justifyContent: "space-around", marginBottom: 30 },
+  statBox: { alignItems: "center" },
+  statNumber: { color: "white", fontSize: 18, fontWeight: "bold" },
+  statLabel: { color: "gray", fontSize: 12 },
+  input: {
+    borderWidth: 1,
+    borderColor: "#555",
+    borderRadius: 10,
+    padding: 12,
+    marginVertical: 10,
+    color: "white",
+  },
+  inputError: { borderColor: "red" },
+  errorText: { color: "red", marginTop: -5, marginBottom: 5 },
   button: {
-    backgroundColor: '#1DB954',
+    backgroundColor: "#1DB954",
     paddingVertical: 12,
     borderRadius: 30,
-    alignItems: 'center',
-    marginHorizontal: 50,
+    alignItems: "center",
+    marginVertical: 20,
   },
-  buttonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
+  buttonText: { color: "white", fontSize: 16, fontWeight: "bold" },
 });

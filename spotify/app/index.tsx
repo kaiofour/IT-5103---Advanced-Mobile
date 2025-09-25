@@ -1,19 +1,37 @@
+import { Provider } from 'react-redux';
 import { Link } from 'expo-router';
+import { store } from '../redux/store';
 import React from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../redux/store';
+import { toggleTheme } from '../redux/themeSlice';
+
 
 const logoImg = require('../assets/images/spotifyLogo.png');
 const fbImg = require('../assets/images/facebook-logo.png');
 const ggImg = require('../assets/images/google-logo.png');
 
-
 export default function App() {
+  return (
+    <Provider store={store}>
+      <MainScreen />
+    </Provider>
+  );
+}
+
+function MainScreen() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
 
+   // Redux hooks
+  const darkMode = useSelector((state: RootState) => state.theme.darkMode);
+  const dispatch = useDispatch<AppDispatch>();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? '#121212' : '#fff' }]}>
 
     <View style={styles.top}>
         <Image source={logoImg} style={styles.logo} />
@@ -65,6 +83,13 @@ export default function App() {
       </Text>
 
 
+      {/* Example theme toggle button */}
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: darkMode ? '#1DB954' : '#000' }]}
+        onPress={() => dispatch(toggleTheme())}
+      >
+        <Text style={styles.buttonText}>Toggle Theme</Text>
+      </TouchableOpacity>
     
     </SafeAreaView>
   );
