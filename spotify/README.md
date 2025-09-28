@@ -7,7 +7,9 @@ The app uses a stack navigator to manage transitions between the sign-in, sign-u
 ![alt text](settings-screen.jpg)
 
 
+week 4 activity 1
 
+week 4 activity 2
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
