@@ -7,12 +7,21 @@ The app uses a stack navigator to manage transitions between the sign-in, sign-u
 ![alt text](settings-screen.jpg)
 
 
+
+
 week 4 activity 1
 ![alt text](week4-activity1.jpg)
 Our state management approach used useReducer for handling complex playlist operations like add, remove, clear, and undo/redo, while AsyncStorage ensured playlists persisted across app restarts. We structured the state into past, present, and future to support time-travel editing, and relied on useState only for lightweight inputs such as the new song field. In short, we kept complex business logic in useReducer and simple UI state in useState, making the app both clean and scalable.
 
+
+
+
 week 4 activity 2
 ![alt text](week4-activity2.jpg)
+The validation logic runs in real time as the user types, checking that the username is 3–20 characters, the email has a valid format, and the genre matches the allowed list. Any errors are immediately shown below the input fields, and invalid inputs are highlighted with a red border. Animations are handled with Reanimated’s FadeIn, giving the profile preview a smooth entrance when the screen loads. The preview section updates instantly because it’s bound to state variables, so every valid change in the inputs reflects right away on the displayed profile.
+
+
+
 
 week 5 activity 1
 ![alt text](week5-activity1.jpg)
