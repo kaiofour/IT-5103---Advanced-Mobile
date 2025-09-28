@@ -8,8 +8,16 @@ The app uses a stack navigator to manage transitions between the sign-in, sign-u
 
 
 week 4 activity 1
+![alt text](week4-activity1.jpg)
+Our state management approach used useReducer for handling complex playlist operations like add, remove, clear, and undo/redo, while AsyncStorage ensured playlists persisted across app restarts. We structured the state into past, present, and future to support time-travel editing, and relied on useState only for lightweight inputs such as the new song field. In short, we kept complex business logic in useReducer and simple UI state in useState, making the app both clean and scalable.
 
 week 4 activity 2
+![alt text](week4-activity2.jpg)
+
+week 5 activity 1
+![alt text](week5-activity1.jpg)
+The theme was managed with a Redux store, holding a darkMode state that controlled the app’s colors. UI components used this value to dynamically switch between dark and light backgrounds and text colors. We also added animated transitions for a smoother experience, making the theme toggle feel fluid instead of abrupt.
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
