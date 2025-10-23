@@ -27,6 +27,17 @@ week 5 activity 1
 ![alt text](week5-activity1.jpg)
 The theme was managed with a Redux store, holding a darkMode state that controlled the app’s colors. UI components used this value to dynamically switch between dark and light backgrounds and text colors. We also added animated transitions for a smoother experience, making the theme toggle feel fluid instead of abrupt.
 
+
+week 5 activity 2
+![alt text](<updated profile screen.jpg>)
+![alt text](<front camera trigger.jpg>)
+![alt text](<back camera trigger.jpg>)
+The camera functionality allows users to capture images or videos directly within an application using their device’s camera. It typically includes features like switching between the front and back cameras, adjusting settings such as flash or zoom, and saving captured media to storage or uploading it for further use. In mobile app development, APIs like Expo Camera simplify access to these capabilities across different devices. Overall, camera functionality enhances user interaction by enabling personalized and real-time content creation.
+
+week 6 activity 1
+![alt text](<week 6 activity 1.jpg>)
+Making the ios build was quite difficult because we didn't know what was stopping us from building it, whether it was the expo third party tool, or some other packages that was causing it. But yes we were able to build it in ios but only with the expo tool. The next task wall is building it without expo so that we wont have these kind of issues. 
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).

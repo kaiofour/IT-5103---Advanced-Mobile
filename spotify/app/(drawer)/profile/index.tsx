@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Image,
@@ -22,18 +23,22 @@ const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 const validateGenre = (genre: string) => GENRES.includes(genre);
 
 export default function Profile() {
-  const profile_photo = require("../../assets/images/profile-photo.jpg");
+  const router = useRouter();
+  const { newPhoto } = useLocalSearchParams(); // photo passed from CameraScreen
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [genre, setGenre] = useState("");
+  const [profilePhoto, setProfilePhoto] = useState<string | null>(null);
 
   const [errors, setErrors] = useState({ username: "", email: "", genre: "" });
 
-  // Load saved form on mount
+  // Load saved form and photo on mount
   useEffect(() => {
     const loadForm = async () => {
       const saved = await AsyncStorage.getItem("profileForm");
+      const savedPhoto = await AsyncStorage.getItem("profilePhoto");
+      if (savedPhoto) setProfilePhoto(savedPhoto);
       if (saved) {
         try {
           const data = JSON.parse(saved);
@@ -50,11 +55,16 @@ export default function Profile() {
 
   // Save form whenever inputs change
   useEffect(() => {
-    AsyncStorage.setItem(
-      "profileForm",
-      JSON.stringify({ username, email, genre })
-    );
+    AsyncStorage.setItem("profileForm", JSON.stringify({ username, email, genre }));
   }, [username, email, genre]);
+
+  // When returning from CameraScreen
+  useEffect(() => {
+    if (newPhoto) {
+      setProfilePhoto(String(newPhoto));
+      AsyncStorage.setItem("profilePhoto", String(newPhoto));
+    }
+  }, [newPhoto]);
 
   // --- Handlers
   const handleUsernameChange = (text: string) => {
@@ -87,7 +97,6 @@ export default function Profile() {
     const genreValid = validateGenre(genre);
 
     if (usernameValid && emailValid && genreValid) {
-      // Clear cache and inputs
       setErrors({ username: "", email: "", genre: "" });
       await AsyncStorage.removeItem("profileForm");
       alert("Profile submitted!");
@@ -105,12 +114,25 @@ export default function Profile() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 50 }}>
-        {/* Profile Info with Dynamic Preview */}
+        {/* Profile Info */}
         <Animated.View entering={FadeIn} style={styles.profileSection}>
+          {/* Change Picture Button */}
+          <TouchableOpacity
+            onPress={() => router.push("/profile/CameraScreen")}
+            style={{ marginBottom: 10 }}
+          >
+            <Text style={{ color: "#1DB954" }}>Change Profile Picture</Text>
+          </TouchableOpacity>
+
           <Image
-            source={require("../../assets/images/profile-photo.jpg")}
+            source={
+              profilePhoto
+                ? { uri: profilePhoto }
+                : require("../../../assets/images/profile-photo.jpg")
+            }
             style={styles.profileImage}
           />
+
           <Text style={styles.name}>{username || "Russel Edullantes"}</Text>
           <Text style={styles.username}>{email || "@kaiofour"}</Text>
           {genre ? (

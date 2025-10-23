@@ -12,8 +12,9 @@ export default function DrawerLayout() {
         drawerInactiveTintColor: "white",
       }}
     >
+      {/* 👇 This points to /app/(drawer)/profile/index.tsx */}
       <Drawer.Screen
-        name="Profile"
+        name="profile"
         options={{
           title: "Profile",
           drawerIcon: ({ color, size }) => (
@@ -21,8 +22,9 @@ export default function DrawerLayout() {
           ),
         }}
       />
+
       <Drawer.Screen
-        name="Playlists"
+        name="playlist"
         options={{
           title: "Playlists",
           drawerIcon: ({ color, size }) => (
@@ -30,8 +32,9 @@ export default function DrawerLayout() {
           ),
         }}
       />
+
       <Drawer.Screen
-        name="Settings"
+        name="playlist/Settings"
         options={{
           title: "Settings",
           drawerIcon: ({ color, size }) => (
